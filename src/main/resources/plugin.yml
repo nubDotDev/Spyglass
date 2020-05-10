@@ -1,0 +1,10 @@
+main: me.nubdotdev.spyglass.Spyglass
+name: Spyglass
+version: 1.0.0
+description: A simple and configurable command and social spy for your server's staff
+author: nubDotDev
+
+commands:
+  spyglass:
+    aliases: [sg]
+    usage: /spyglass <social/command/reload> [player]
