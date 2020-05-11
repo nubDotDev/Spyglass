@@ -30,37 +30,35 @@ public class CommandListener implements Listener {
         String message = e.getMessage();
         String[] args = message.split(" ");
         String command = args[0].toLowerCase().replaceAll("/", "");
+        Player recipient;
+        String chat;
         if (((List<String>) plugin.getConfigManager().getValue("social-commands")).contains(command)) {
             if (args.length < 3)
                 return;
-            Player recipient = Bukkit.getPlayer(args[1]);
+            recipient = Bukkit.getPlayer(args[1]);
+            chat = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
             if (recipient == null || recipient.hasPermission("spyglass.admin"))
                 return;
             replyRecipients.put(sender, recipient);
-            replyRecipients.put(recipient, sender);
-            sendSocialSpy(sender, recipient, String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
-            if ((boolean) plugin.getConfigManager().getValue("command-spy-on-social-commands"))
-                sendCommandSpy(sender, message, false);
-            return;
         } else if (((List<String>) plugin.getConfigManager().getValue("reply-commands")).contains(command)) {
             if (args.length < 2)
                 return;
-            Player recipient = replyRecipients.get(sender);
-            if (!Bukkit.getOnlinePlayers().contains(recipient)) {
+            recipient = replyRecipients.get(sender);
+            if (recipient == null || !Bukkit.getOnlinePlayers().contains(recipient) || recipient.hasPermission("spyglass.admin")) {
                 replyRecipients.remove(sender);
                 return;
             }
-            if (recipient == null || recipient.hasPermission("spyglass.admin"))
-                return;
-            replyRecipients.put(recipient, sender);
-            sendSocialSpy(sender, recipient, String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
-            if ((boolean) plugin.getConfigManager().getValue("command-spy-on-social-commands"))
-                sendCommandSpy(sender, message, false);
+            chat = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        } else {
+            boolean blacklisted = (boolean) plugin.getConfigManager().getValue("blacklist-is-whitelist") ^
+                    ((List<String>) plugin.getConfigManager().getValue("command-blacklist")).contains(command);
+            sendCommandSpy(sender, message, blacklisted);
             return;
         }
-        boolean blacklisted = (boolean) plugin.getConfigManager().getValue("blacklist-is-whitelist") ^
-                ((List<String>) plugin.getConfigManager().getValue("command-blacklist")).contains(command);
-        sendCommandSpy(sender, message, blacklisted);
+        replyRecipients.put(recipient, sender);
+        sendSocialSpy(sender, recipient, chat);
+        if ((boolean) plugin.getConfigManager().getValue("command-spy-on-social-commands"))
+            sendCommandSpy(sender, message, false);
     }
 
     @EventHandler
