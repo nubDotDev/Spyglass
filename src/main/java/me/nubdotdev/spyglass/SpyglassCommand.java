@@ -37,7 +37,7 @@ public class SpyglassCommand implements CommandExecutor, TabCompleter {
                     } else {
                         String spy = args[0].toLowerCase();
                         Player p;
-                        if (args.length >= 2) {
+                        if (args.length >= 2 && !args[1].equalsIgnoreCase(sender.getName())) {
                             if (!sender.hasPermission("spyglass." + spy + ".other")) {
                                 sender.sendMessage(plugin.getConfigManager().getMessage("no-perms"));
                                 return true;
