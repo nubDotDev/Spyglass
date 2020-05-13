@@ -29,6 +29,9 @@ blacklist-is-whitelist: false
 # These commands cannot be spied on without the permission 'spyglass.command.bypass'
 command-blacklist:
   - 'blacklisted-command'
+# These commands cannot be spied on regardless of permissions:
+ignored-commands:
+  - 'ignored-command'
 
 # These commands will be detected on by social spy
 # Their format must be: /<COMMAND> <RECIPIENT> <MESSAGE>
@@ -52,3 +55,6 @@ reply-commands:
   - 'er'
   - 'reply'
   - 'ereply'
+
+# Will make social spy detect the vanilla command '/teammsg'
+spy-teammsg: false
