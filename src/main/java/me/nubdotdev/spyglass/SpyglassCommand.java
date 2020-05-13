@@ -106,8 +106,4 @@ public class SpyglassCommand implements CommandExecutor, TabCompleter {
         return null;
     }
 
-    private void toggleCommand(CommandSender sender, String[] args) {
-
-    }
-
 }
