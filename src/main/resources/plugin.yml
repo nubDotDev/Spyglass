@@ -1,6 +1,6 @@
 main: me.nubdotdev.spyglass.Spyglass
 name: Spyglass
-version: 1.0.2
+version: 1.1.0
 description: A simple and configurable command and social spy for your server's staff
 author: nubDotDev
 
