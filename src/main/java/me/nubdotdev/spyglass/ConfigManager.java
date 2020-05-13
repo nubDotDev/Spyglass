@@ -12,7 +12,6 @@ public class ConfigManager {
 
     private final Plugin plugin;
     private FileConfiguration config;
-    private final Map<String, Object> values = new HashMap<>();
     private final Map<String, String> messages = new HashMap<>();
 
     public ConfigManager(Plugin plugin) {
@@ -23,17 +22,14 @@ public class ConfigManager {
     }
 
     public void reload() {
+        plugin.saveResource("config.yml", false);
         plugin.reloadConfig();
         config = plugin.getConfig();
         reloadMessages();
     }
 
     public void reloadMessages() {
-        values.clear();
         messages.clear();
-        for (Map.Entry<String, Object> entry : config.getValues(false).entrySet())
-            if (!(entry.getValue() instanceof ConfigurationSection))
-                values.put(entry.getKey(), entry.getValue());
         ConfigurationSection messageSection = config.getConfigurationSection("messages");
         if (messageSection == null)
             return;
@@ -46,20 +42,12 @@ public class ConfigManager {
         }
     }
 
-    public Object getValue(String key) {
-        return values.get(key);
-    }
-
     public String getMessage(String key) {
         return messages.getOrDefault(key, "Unknown message '" + key + "'");
     }
 
     public FileConfiguration getConfig() {
         return config;
-    }
-
-    public Map<String, Object> getValues() {
-        return values;
     }
 
     private String cc(String s) {
