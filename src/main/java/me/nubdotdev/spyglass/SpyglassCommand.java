@@ -12,6 +12,7 @@ import org.bukkit.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class SpyglassCommand implements CommandExecutor, TabCompleter {
 
@@ -57,20 +58,21 @@ public class SpyglassCommand implements CommandExecutor, TabCompleter {
                         return true;
                     }
                     String mode;
+                    UUID uuid = p.getUniqueId();
                     if (spy.equals("command")) {
-                        if (plugin.getCommandSpy().contains(p)) {
-                            plugin.getCommandSpy().remove(p);
+                        if (plugin.getCommandSpy().contains(uuid)) {
+                            plugin.getCommandSpy().remove(uuid);
                             mode = "disabled";
                         } else {
-                            plugin.getCommandSpy().add(p);
+                            plugin.getCommandSpy().add(uuid);
                             mode = "enabled";
                         }
                     } else {
-                        if (plugin.getSocialSpy().contains(p)) {
-                            plugin.getSocialSpy().remove(p);
+                        if (plugin.getSocialSpy().contains(uuid)) {
+                            plugin.getSocialSpy().remove(uuid);
                             mode = "disabled";
                         } else {
-                            plugin.getSocialSpy().add(p);
+                            plugin.getSocialSpy().add(uuid);
                             mode = "enabled";
                         }
                     }

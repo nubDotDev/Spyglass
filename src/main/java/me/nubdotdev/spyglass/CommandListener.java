@@ -12,6 +12,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class CommandListener implements Listener {
 
@@ -80,8 +81,9 @@ public class CommandListener implements Listener {
     }
 
     private void sendCommandSpy(Player sender, String command, boolean blacklisted) {
-        for (Player p : plugin.getCommandSpy()) {
-            if (p != sender) {
+        for (UUID uuid : plugin.getCommandSpy()) {
+            Player p = Bukkit.getPlayer(uuid);
+            if (p != null && !uuid.equals(sender.getUniqueId())) {
                 if (!blacklisted || p.hasPermission("spyglass.command.bypass")) {
                     p.sendMessage(plugin.getConfigManager().getMessage("command-spy")
                             .replaceAll("%sender%", sender.getName())
@@ -93,8 +95,9 @@ public class CommandListener implements Listener {
     }
 
     private void sendSocialSpy(Player sender, String recipientName, String message) {
-        for (Player p : plugin.getSocialSpy()) {
-            if (p != sender && !p.getName().equals(recipientName)) {
+        for (UUID uuid : plugin.getSocialSpy()) {
+            Player p = Bukkit.getPlayer(uuid);
+            if (p != null && !uuid.equals(sender.getUniqueId()) && !p.getName().equals(recipientName)) {
                 p.sendMessage(plugin.getConfigManager().getMessage("social-spy")
                         .replaceAll("%sender%", sender.getName())
                         .replaceAll("%recipient%", recipientName)

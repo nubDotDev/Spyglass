@@ -1,19 +1,19 @@
 package me.nubdotdev.spyglass;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class Spyglass extends JavaPlugin implements Listener {
 
     private ConfigManager configManager;
 
-    private final Set<Player> commandSpy = new HashSet<>();
-    private final Set<Player> socialSpy = new HashSet<>();
+    private final Set<UUID> commandSpy = new HashSet<>();
+    private final Set<UUID> socialSpy = new HashSet<>();
 
     @Override
     public void onEnable() {
@@ -26,11 +26,11 @@ public class Spyglass extends JavaPlugin implements Listener {
         return configManager;
     }
 
-    public Set<Player> getCommandSpy() {
+    public Set<UUID> getCommandSpy() {
         return commandSpy;
     }
 
-    public Set<Player> getSocialSpy() {
+    public Set<UUID> getSocialSpy() {
         return socialSpy;
     }
 

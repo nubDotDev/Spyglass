@@ -46,10 +46,6 @@ public class ConfigManager {
         return messages.getOrDefault(key, "Unknown message '" + key + "'");
     }
 
-    public FileConfiguration getConfig() {
-        return config;
-    }
-
     private String cc(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
