@@ -96,16 +96,13 @@ public class SpyglassCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("spyglass")) {
-            if (args.length == 1) {
-                List<String> completions = new ArrayList<>();
+        List<String> completions = new ArrayList<>();
+        if (sender.hasPermission("spyglass.help"))
+            if (args.length == 1)
                 for (String s : subCommands)
                     if (StringUtil.startsWithIgnoreCase(s, args[0]))
                         completions.add(s);
-                return completions;
-            }
-        }
-        return null;
+        return completions;
     }
 
 }
