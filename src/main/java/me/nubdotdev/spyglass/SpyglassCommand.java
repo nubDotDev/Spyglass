@@ -9,18 +9,19 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class SpyglassCommand implements CommandExecutor, TabCompleter {
 
-    private final Spyglass plugin;
+    private final ConfigManager manager;
+    private final Set<UUID> commandSpy;
+    private final Set<UUID> socialSpy;
     private final List<String> subCommands = Arrays.asList("reload", "command", "social");
 
     public SpyglassCommand(Spyglass plugin) {
-        this.plugin = plugin;
+        this.manager = plugin.getConfigManager();
+        this.commandSpy = plugin.getCommandSpy();
+        this.socialSpy = plugin.getSocialSpy();
     }
 
     @Override
@@ -29,27 +30,27 @@ public class SpyglassCommand implements CommandExecutor, TabCompleter {
             if (subCommands.contains(args[0].toLowerCase())) {
                 if (args[0].equalsIgnoreCase("reload")) {
                     if (sender.hasPermission("spyglass.reload")) {
-                        plugin.getConfigManager().reload();
-                        sender.sendMessage(plugin.getConfigManager().getMessage("reload"));
+                        manager.reload();
+                        sender.sendMessage(manager.getMessage("reload"));
                     } else {
-                        sender.sendMessage(plugin.getConfigManager().getMessage("no-perms"));
+                        sender.sendMessage(manager.getMessage("no-perms"));
                     }
                 } else {
                     String spy = args[0].toLowerCase();
                     Player p;
                     if (args.length >= 2 && !args[1].equalsIgnoreCase(sender.getName())) {
                         if (!sender.hasPermission("spyglass." + spy + ".other")) {
-                            sender.sendMessage(plugin.getConfigManager().getMessage("no-perms"));
+                            sender.sendMessage(manager.getMessage("no-perms"));
                             return true;
                         }
                         p = Bukkit.getPlayer(args[1]);
                         if (p == null) {
-                            sender.sendMessage(plugin.getConfigManager().getMessage("no-player"));
+                            sender.sendMessage(manager.getMessage("no-player"));
                             return true;
                         }
                     } else if (sender instanceof Player) {
                         if (!sender.hasPermission("spyglass." + spy + ".self")) {
-                            sender.sendMessage(plugin.getConfigManager().getMessage("no-perms"));
+                            sender.sendMessage(manager.getMessage("no-perms"));
                             return true;
                         }
                         p = (Player) sender;
@@ -60,23 +61,23 @@ public class SpyglassCommand implements CommandExecutor, TabCompleter {
                     String mode;
                     UUID uuid = p.getUniqueId();
                     if (spy.equals("command")) {
-                        if (plugin.getCommandSpy().contains(uuid)) {
-                            plugin.getCommandSpy().remove(uuid);
+                        if (commandSpy.contains(uuid)) {
+                            commandSpy.remove(uuid);
                             mode = "disabled";
                         } else {
-                            plugin.getCommandSpy().add(uuid);
+                            commandSpy.add(uuid);
                             mode = "enabled";
                         }
                     } else {
-                        if (plugin.getSocialSpy().contains(uuid)) {
-                            plugin.getSocialSpy().remove(uuid);
+                        if (socialSpy.contains(uuid)) {
+                            socialSpy.remove(uuid);
                             mode = "disabled";
                         } else {
-                            plugin.getSocialSpy().add(uuid);
+                            socialSpy.add(uuid);
                             mode = "enabled";
                         }
                     }
-                    String message = plugin.getConfigManager().getMessage("toggle")
+                    String message = manager.getMessage("toggle")
                             .replaceAll("%spy%", spy)
                             .replaceAll("%mode%", mode)
                             .replaceAll("%player%", p.getName());
@@ -90,7 +91,7 @@ public class SpyglassCommand implements CommandExecutor, TabCompleter {
         if (sender.hasPermission("spyglass.help"))
             sender.sendMessage(ChatColor.RED + "Usage: " + cmd.getUsage());
         else
-            sender.sendMessage(plugin.getConfigManager().getMessage("no-perms"));
+            sender.sendMessage(manager.getMessage("no-perms"));
         return true;
     }
 
